@@ -47,24 +47,26 @@ def main():
     wifi_scanner = get_scanner()
     access_point = wifi_scanner.get_access_points()
     data_process(access_point , latitude, longitude, altitude)
+    print("Next sequence")
     sleep(1)
 
 
 # drone
-connection = "udp:127.0.0.1:14551" # SITL
-#connection = "/dev/ttyCOM1"
+# connection = "172.16.10.18:14550" # SITL
+connection = "/dev/ttyAMA0"
+baud_rate = 921600
 print("Connecting to the drone via MAVLINK at %s" % connection)
-vehicle = connect(connection, wait_ready=True)
+vehicle = connect(connection, baud = baud_rate, wait_ready=True)
 vehicle.wait_ready('autopilot_version')
 
 print("Connection established")
 vehicle.add_attribute_listener('location.global_relative_frame', location_callback)
-
+#
 if __name__ == '__main__':
     while True:
         try:
             main()  # start the leap and mqtt
         except KeyboardInterrupt:
-            print "Bye"
+            print("Bye")
             sys.exit()
 
